@@ -8,6 +8,7 @@ const path = require('path');
 const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname,'public')));//donne accès au fichier du dossier public 'public'
 
 app.use('/admin',adminRoute); // '/admin' est un filtre, toute les routes de adminRoute seront accessibles avec le prefixe /admin/nom_route_adminRoute
 app.use(shopRoute);
