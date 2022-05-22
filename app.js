@@ -8,7 +8,7 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(adminRoute);
+app.use('/admin',adminRoute); // '/admin' est un filtre, toute les routes de adminRoute seront accessibles avec le prefixe /admin/nom_route_adminRoute
 app.use(shopRoute);
 
 //Faire une page 404

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/product-page', (req, res, next) => {
-    res.send("<body><form method='POST' action='/product'><input type='text' name='title' > <button type='submit'>Add title</button>'</form></body>");
+    res.send("<body><form method='POST' action='/admin/product'><input type='text' name='title' > <button type='submit'>Add title</button>'</form></body>");
 });
 
 //le middleware sera en poste sur /product
