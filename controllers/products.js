@@ -12,10 +12,14 @@ exports.postNewProduct = (req, res, next) => {
 }
 
 exports.getHomePage = (req, res, next) => {
-    const products = Product.fetchAll();
-    res.render('shop', {
-        products: products,
-        pageTitle: 'Home Page',
-        users: userData.users
+    /* On rajoute les informations dans la fonction callback 
+    car sinon la fonction seule renvoie null */
+    const products = Product.fetchAll((products) => {
+        res.render('shop', {
+            products: products,
+            pageTitle: 'Home Page',
+            users: userData.users
+        });
     });
+
 }
