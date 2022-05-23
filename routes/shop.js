@@ -5,14 +5,8 @@ const userData = require('../routes/user');
 
 const path = require('path');
 const rootDir = require('../utils/path');
+const shopController = require('../controllers/products');
 
-router.get('/', (req, res, next) => {
-    console.log(adminData.products);
-    res.render('shop', {
-        products: adminData.products,
-        pageTitle: 'Home Page',
-        users: userData.users
-    });
-});
+router.get('/', shopController.getHomePage);
 
 module.exports = router;
