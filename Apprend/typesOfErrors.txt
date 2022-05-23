@@ -1,3 +1,0 @@
-Syntaxe errors
-runtime errors
-logical errors

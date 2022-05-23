@@ -1,12 +1,18 @@
-const express = require('express');
-const router = express.Router();
 const path = require('path');
-const rootDir = require('../utils/path');
-const productsController = require('../controllers/products');
 
-router.use('/product-page', productsController.getProduct);
+const express = require('express');
 
-//le middleware sera en poste sur /product
-router.post('/product', productsController.postNewProduct);
+const adminController = require('../controllers/admin');
 
-exports.routes = router;
+const router = express.Router();
+
+// /admin/add-product => GET
+router.get('/add-product', adminController.getAddProduct);
+
+// /admin/products => GET
+router.get('/products', adminController.getProducts);
+
+// /admin/add-product => POST
+router.post('/add-product', adminController.postAddProduct);
+
+module.exports = router;

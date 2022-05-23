@@ -1,4 +1,3 @@
-exports.errorPage = (req, res, next) => {
-    console.log('hello');
-    res.status(404).render('404', { pageTitle: 'Page non trouvé :( -- controller--' });
-}
+exports.get404 = (req, res, next) => {
+  res.status(404).render('404', { pageTitle: 'Page Not Found', path: '/404' });
+};
