@@ -9,6 +9,8 @@ const adminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
 const userData = require('./routes/user');
 
+const errorPageController = require('./controllers/error')
+
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -22,9 +24,6 @@ app.use(shopRoute);
 app.use('/user',userData.routes);
 
 //Faire une page 404
-app.use('*', (req, res, next) => {
-    console.log('hello');
-    res.status(404).render('404', { pageTitle: 'Page non trouvé :(' });
-});
+app.use('*', errorPageController.errorPage);
 
 app.listen(3000);
