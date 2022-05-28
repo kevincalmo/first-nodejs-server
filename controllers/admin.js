@@ -3,10 +3,7 @@ const Product = require('../models/product');
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
-    path: '/admin/edit-product',
-    formsCSS: true,
-    productCSS: true,
-    activeAddProduct: true,
+    path: '/admin/add-product',
     editing: false
   });
 };
@@ -26,15 +23,14 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect('/');
   }
-  const proId = req.params.productId;
-  Product.findById(proId, product => {
-    if (!product) return res.redirect('/');
+  const prodId = req.params.productId;
+  Product.findById(prodId, product => {
+    if (!product) {
+      return res.redirect('/');
+    }
     res.render('admin/edit-product', {
       pageTitle: 'Edit Product',
       path: '/admin/edit-product',
-      formsCSS: true,
-      productCSS: true,
-      activeAddProduct: true,
       editing: editMode,
       product: product
     });
@@ -43,18 +39,19 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  const uptatedTitle = req.body.title;
-  const uptatedImageUrl = req.body.imageUrl;
-  const uptatedPrice = req.body.price;
-  const uptatedDescription = req.body.description;
+  const updatedTitle = req.body.title;
+  const updatedPrice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDesc = req.body.description;
   const updatedProduct = new Product(
     prodId,
-    uptatedTitle,
-    uptatedImageUrl,
-    uptatedDescription,
-    uptatedPrice
+    updatedTitle,
+    updatedImageUrl,
+    updatedDesc,
+    updatedPrice
   );
   updatedProduct.save();
+  res.redirect('/admin/products');
 };
 
 exports.getProducts = (req, res, next) => {
@@ -68,7 +65,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  const proId = req.body.productId;
-  Product.delete(proId);
+  const prodId = req.body.productId;
+  Product.deleteById(prodId);
   res.redirect('/admin/products');
 };
