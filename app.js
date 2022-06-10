@@ -15,6 +15,10 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
+const Order = require('./models/order');
+const orderItem = require('./models/order-item');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,12 +36,27 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
+/*********************************************************/
+/* User relation */
 Product.belongsTo(User, {
     constraints: true,
     onDelete: 'Cascade'
 });
 User.hasMany(Product);
+/* Cart relation */
+User.hasOne(Cart);
+Cart.belongsTo(User, {
+    constraints: true,
+    onDelete: 'Cascade'
+});
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
+/* Order relation */
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: orderItem });
+/*********************************************************/
 
 app.use(errorController.get404);
 sequelize.sync()
@@ -56,6 +75,7 @@ sequelize.sync()
     })
     .then(user => {
         //console.log(user);
+        user.createCart();
         app.listen(3000);
     })
     .catch(err => {
