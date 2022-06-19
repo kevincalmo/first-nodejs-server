@@ -1,4 +1,4 @@
-const mongodb = require('mongodb');
+/* const mongodb = require('mongodb');
 const { getCart } = require('../controllers/shop');
 const getDb = require('../util/database').getDb;
 
@@ -120,3 +120,4 @@ class User {
 }
 
 module.exports = User;
+ */
