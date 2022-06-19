@@ -82,6 +82,10 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    //select permet de sélectionner les informations que je veux renvoyer 
+    //.select('title price -_id')
+    // populate permet d'afficher toute les info du user 
+    //.populate('userId')
     .then(products => {
       res.render('admin/products', {
         prods: products,
