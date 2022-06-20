@@ -3,11 +3,20 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
+const MONGODB_URI = 'mongodb+srv://kevin:Madinina972@cluster0.phhif.mongodb.net/shop?retryWrites=true&w=majority';
+
 const app = express();
+//store pour stocker les données de sessions dans mongodb
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -18,9 +27,19 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+//configuration du middleware de session
+app.use(session({
+  secret: 'my secret',
+  resave: false,
+  saveUninitialized: false,
+  store: store
+}));
 
 app.use((req, res, next) => {
-  User.findById("62af00d3ceb44fe30353ea13")
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
       next();
@@ -34,7 +53,7 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect('mongodb+srv://kevin:Madinina972@cluster0.phhif.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect(MONGODB_URI)
   .then(result => {
     app.listen(3000);
   })
