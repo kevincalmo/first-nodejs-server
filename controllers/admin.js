@@ -1,14 +1,10 @@
-const mongodb = require('mongodb');
 const Product = require('../models/product');
-
-const ObjectId = mongodb.ObjectId;
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    editing: false,
-    isAuthenticated: req.isLoggedIn
+    editing: false
   });
 };
 
@@ -22,10 +18,10 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
-    userId: req.user._id
+    userId: req.user
   });
   product
-    .save() //save method de mongoose
+    .save()
     .then(result => {
       // console.log(result);
       console.log('Created Product');
@@ -43,7 +39,6 @@ exports.getEditProduct = (req, res, next) => {
   }
   const prodId = req.params.productId;
   Product.findById(prodId)
-    // Product.findById(prodId)
     .then(product => {
       if (!product) {
         return res.redirect('/');
@@ -52,8 +47,7 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product: product,
-        isAuthenticated: req.session.isLoggedIn
+        product: product
       });
     })
     .catch(err => console.log(err));
@@ -79,21 +73,18 @@ exports.postEditProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => console.log(err));
-
 };
 
 exports.getProducts = (req, res, next) => {
   Product.find()
-    //select permet de sélectionner les informations que je veux renvoyer 
-    //.select('title price -_id')
-    // populate permet d'afficher toute les info du user 
-    //.populate('userId')
+    // .select('title price -_id')
+    // .populate('userId', 'name')
     .then(products => {
+      console.log(products);
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/admin/products',
-        isAuthenticated: req.session.isLoggedIn
+        path: '/admin/products'
       });
     })
     .catch(err => console.log(err));
