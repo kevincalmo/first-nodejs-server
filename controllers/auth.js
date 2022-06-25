@@ -1,3 +1,4 @@
+const crypto = require('crypto'); //librairie permettant de créer une valeur unique
 const bcrypt = require('bcryptjs');
 const nodeMailer = require('nodemailer');
 const User = require('../models/user');
@@ -127,3 +128,40 @@ exports.getResetPage = (req, res, next) => {
     errorMessage: message
   });
 }
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect('/');
+    }
+    //génération d'un token en hexadéciamle , pour ASCII
+    const token = buffer.toString('hex');
+
+    //trouver mon user dans la database avec l'email passé dans la requete post
+    User.findOne({ email: req.body.email })
+      .then(user => {
+        //si le user n'est pas retrouver
+        if (!user) {
+          req.flash('error', 'No account with that email found');
+          return res.redirect('/');
+        }
+        //je passe au user le token que j'ai cré avec crypto
+        user.resetToken = token;
+        //le token expire dans une heure , 36000000 millisecondes
+        user.resetTokenExpiration = Date.now() + 36000000;
+        return user.save();
+      })
+      .then(result => {
+        //envoye de l'email pour reset le password
+        res.redirect('/');
+        transporter.sendMail({
+          to: req.body.email,
+          from: 'shop@node-complete.com',
+          subject: 'reset password',
+          html: `<p>You requested a password reset <br> Click this <a href="http://localhost:3000/reset/${token}">link to set a new password.</p>`
+        })
+      })
+      .catch(err => console.log(err));
+  });
+};
